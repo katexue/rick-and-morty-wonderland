@@ -1,12 +1,12 @@
 <template>
-  <div class="errorPage">
+  <section class="errorPage container">
     <h1>404</h1>
     <p>{{ msg }}</p>
-  </div>
+  </section>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 
 export default {
@@ -18,12 +18,13 @@ export default {
   },
   setup(props) {
     const route = useRoute()
-    const msg = ref(props.errorMsg)
+    const data = reactive({
+      msg: props.errorMsg
+    })
 
-    console.log(route.params)
-    msg.value = route.params.errorMsg
+    data.msg = route.params.errorMsg
 
-    return { msg }
+    return { ...toRefs(msg) }
   }
 }
 </script>

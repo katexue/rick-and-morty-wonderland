@@ -1,55 +1,29 @@
 <template>
-  <div class="app">
-    Vue is working!
-    <div class="test">Hi!!! {{ counter }}</div>
-    <router-view></router-view>
-  </div>
+  <Header />
+  <router-view class="wrapper"></router-view>
+  <Footer />
 </template>
 
 <script>
-import axios from 'axios'
-import {
-  ref,
-  onMounted
-} from 'vue'
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
 
 export default {
-  setup() {
-    const counter = ref(2)
-
-    const test = () => {
-      console.log('test')
-    }
-
-    onMounted(async () => {
-      const response = await axios.get('https://rickandmortyapi.com/api/character/?page=1&count=20')
-
-      console.log(response)
-    })
-
-    return {
-      counter,
-      test
-    }
-  },
-  mounted() {
-
+  name: 'App',
+  components: {
+    Header,
+    Footer
   }
 }
 </script>
 
 <style lang="scss">
-@import '../scss/_mixins.scss';
+:root {
+  --header-h-s: 90px;
+  --footer-h-s: 55px;
+}
 
-.app {
-  font-size: var(--body-font-size-small);
-
-  .test {
-    color: red;
-
-    @include small-up {
-      color: purple;
-    }
-  }
+.wrapper {
+  min-height: calc(100vh - (var(--header-h-s) + var(--footer-h-s)));
 }
 </style>
