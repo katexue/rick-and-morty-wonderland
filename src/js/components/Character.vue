@@ -2,9 +2,11 @@
   <div class="character" :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]">
     <div class="character__id">{{ index }}. </div>
     <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
-    <div class="tag" :class="`tag--${type}`">{{ species }}</div>
     <button @click="toggleCharacter()" class="character__action">
-      {{ character.name }}
+      <div class="character__name">
+        {{ character.name }}
+      </div>
+      <div class="tag" :class="`tag--${type}`">{{ species }}</div>
     </button>
   </div>
 </template>
@@ -54,7 +56,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding-left: var(--spacing);
 
   .item-large & {
@@ -75,7 +77,7 @@ export default {
 .avatar {
   width: var(--avatar-size-s);
   height: auto;
-  margin-right: var(--spacing-half);
+  // margin-right: var(--spacing-half);
 
   .character--1 & {
     box-shadow: 0px 0px 10px var(--blue);
@@ -90,19 +92,26 @@ export default {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: calc(100% - var(--avatar-size-s) - var(--spacing-half));
   padding: 0;
   text-align: left;
 }
 
+.character__name {
+}
+
 .tag {
-  max-width: 68px;
   padding: 1px 5px;
   border: 1px solid var(--blue);
   border-radius: 4px;
-  margin-right: var(--spacing-half);
+  margin-top: var(--spacing-quarter);
   background: rgba(var(--blue-rgb), 0.2);
   font-size: var(--body-font-size-extra-small);
   color: var(--blue);
+  white-space: nowrap;
 
   &--alien {
     border-color: var(--green);
