@@ -1,0 +1,4 @@
+.parcel-cache
+.git
+node_modules
+dist
