@@ -207,3 +207,8 @@ p {
     padding: var(--spacing-quad) var(--spacing-double);
   }
 }
+
+img {
+  max-width: 100%;
+  height: auto;
+}

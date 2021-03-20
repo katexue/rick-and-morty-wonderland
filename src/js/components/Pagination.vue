@@ -43,18 +43,22 @@ export default {
       prevKey: 3,
       nextKey: 2,
       activePages: computed(() => {
-        const range = []
+        let range = []
 
-        for (let i = 0; i < 5; i++) {
-          const gap1 = 5 % props.currentPage
-          const gap2 = props.pages - props.currentPage
+        if (props.pages < 5) {
+          range = props.pages
+        } else {
+          for (let i = 0; i < 5; i++) {
+            const gap1 = 5 % props.currentPage
+            const gap2 = props.pages - props.currentPage
 
-          if (props.currentPage < data.prevKey) {
-            range.push(props.currentPage + (i - gap1))
-          } else if (gap2 < data.nextKey) {
-            range.push(props.currentPage + (i - 4 + gap2))
-          } else {
-            range.push(props.currentPage + (i - 2))
+            if (props.currentPage < data.prevKey) {
+              range.push(props.currentPage + (i - gap1))
+            } else if (gap2 < data.nextKey) {
+              range.push(props.currentPage + (i - 4 + gap2))
+            } else {
+              range.push(props.currentPage + (i - 2))
+            }
           }
         }
 

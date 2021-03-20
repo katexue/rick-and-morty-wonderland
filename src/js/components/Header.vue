@@ -2,11 +2,13 @@
   <header class="header">
     <div class="container">
       <div class="logo">
-        <img :src="logoUrl" class="logo__asset" alt="Rick and Morty black logo icon" width="40" height="40" />
+        <router-link to="/" class="header__link">
+          <img :src="logoUrl" class="logo__asset" alt="Rick and Morty black logo icon" width="40" height="40" />
+        </router-link>
       </div>
-      <div class="title">
+      <router-link to="/" class="title header__link">
         Rick and Morty Wonderland
-      </div>
+      </router-link>
     </div>
   </header>
 </template>
@@ -40,6 +42,10 @@ export default {
     padding-top: var(--spacing-half);
     padding-bottom: var(--spacing-half);
   }
+}
+
+.header__link {
+  display: block;
 }
 
 .title {

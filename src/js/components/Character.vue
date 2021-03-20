@@ -1,6 +1,6 @@
 <template>
   <div class="character" :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]">
-    <div class="character__id">{{ character.id }}. </div>
+    <div class="character__id">{{ index }}. </div>
     <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
     <div class="tag" :class="`tag--${type}`">{{ species }}</div>
     <button @click="toggleCharacter()" class="character__action">
@@ -19,6 +19,10 @@ export default {
       default: () => {
         return {}
       }
+    },
+    index: {
+      type: Number,
+      default: 1
     }
   },
   setup(props, { emit }) {
