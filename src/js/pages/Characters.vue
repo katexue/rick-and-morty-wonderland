@@ -3,11 +3,18 @@
     <div class="container">
       <h1 class="heading">Characters in Rick and Morty</h1>
       <ul class="list">
-        <li v-for="character in characters" :key="`character-${character.id}`" class="list__item">
+        <li
+          v-for="character in characters"
+          :key="`character-${character.id}`"
+          :class="{
+            'item-large': currentPage > 4
+          }"
+          class="list__item"
+        >
           <Character :character="character" @onModalOpen="toggleModal" />
         </li>
       </ul>
-      <!-- <Pagination /> -->
+      <Pagination :currentPage="currentPage" :pages="information.pages" :nextPage="nextPage" @onPageChange="loadNextPage" />
     </div>
   </section>
 </template>
@@ -27,7 +34,8 @@ import Pagination from '../components/Pagination.vue'
 export default {
   name: 'Characters',
   components: {
-    Character
+    Character,
+    Pagination
   },
   setup() {
     const route = useRoute()
