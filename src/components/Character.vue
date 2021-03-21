@@ -1,7 +1,7 @@
 <template>
   <div class="character" :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]">
     <div class="character__id">{{ index }}.</div>
-    <div class="avatar-wrap">
+    <div @click="toggleCharacter()" class="avatar-wrap">
       <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
     </div>
     <button @click="toggleCharacter()" class="character__action">
@@ -45,8 +45,8 @@ export default {
     }
 
     return {
-      ...utils(),
       ...toRefs(data),
+      ...utils(),
       toggleCharacter
     }
   }
@@ -56,7 +56,7 @@ export default {
 <style lang="scss">
 .character {
   --avatar-size-s: 50px;
-  --avatar-size: 100px;
+  --avatar-size: 80px;
 
   position: relative;
   display: flex;
@@ -64,6 +64,10 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding-left: var(--spacing);
+
+  @include small-up {
+    padding-left: var(--spacing-middle);
+  }
 
   &--dead {
     .avatar-wrap {
@@ -88,6 +92,10 @@ export default {
 
   .item-large & {
     padding-left: calc(var(--spacing) + var(--spacing-quarter));
+
+    @include small-up {
+      padding-left: var(--spacing-double);
+    }
   }
 }
 
@@ -99,10 +107,18 @@ export default {
   transform: translateY(-50%);
   font-family: var(--heading-font-family);
   font-size: var(--body-font-size-small);
+
+  @include small-up {
+    font-size: var(--body-font-size);
+  }
 }
 
 .avatar-wrap {
   width: var(--avatar-size-s);
+
+  @include medium-up {
+    width: var(--avatar-size);
+  }
 }
 
 .avatar {
@@ -128,9 +144,22 @@ export default {
   width: calc(100% - var(--avatar-size-s) - var(--spacing-half));
   padding: 0;
   text-align: left;
+
+  @include medium-up {
+    flex-direction: row;
+    align-items: center;
+    width: calc(100% - var(--avatar-size) - var(--spacing));
+    padding: var(--spacing-half) 0;
+  }
 }
 
 .character__name {
+  // font-family: var(--heading-font-family);
+  font-weight: var(--medium-font-weight);
+
+  @include medium-up {
+    font-size: 18px;
+  }
 }
 
 .tag {
@@ -183,6 +212,12 @@ export default {
     border-color: var(--yellow);
     background: rgba(var(--yellow-rgb), 0.2);
     color: var(--yellow);
+  }
+
+  @include medium-up {
+    margin-top: 0;
+    margin-left: var(--spacing);
+    font-size: var(--body-font-size-small);
   }
 }
 </style>

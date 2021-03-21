@@ -37,6 +37,7 @@ import Search from '@/components/Search.vue'
 import Pagination from '@/components/Pagination.vue'
 import Loader from '@/components/Loader.vue'
 import Details from '@/components/Details.vue'
+import eventBus from '@/plugins/eventBus'
 
 export default {
   name: 'Characters',
@@ -89,9 +90,18 @@ const charactersSetup = () => {
   })
 
   const searchCharacters = (key) => {
-    data.search = key
-    data.currentPage = 1
-    loadNextPage(1)
+    if (key && key !== '') {
+      data.search = key
+      data.currentPage = 1
+      loadNextPage(1)
+    } else {
+      const randomId = Math.floor(Math.random() * data.information.count) + 1
+
+      eventBus.$emit('loadCharacter', {
+        id: randomId,
+        name: '"I\'m feeling lucky!"'
+      })
+    }
   }
 
   const loadPage = async (page) => {

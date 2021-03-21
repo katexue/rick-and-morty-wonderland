@@ -20,6 +20,14 @@
           </div>
         </template>
       </div>
+      <div class="details__episodes">
+        <button @click="toggleEpisodes()" class="button episodes__action">
+          {{ expanded ? 'Hide' : 'Show' }} {{ character.episode.length }} episodes {{ expanded ? '-' : '+' }}
+        </button>
+        <transition name="fade">
+          <Episodes v-show="expanded" :loading="loadingEpisodes" :expanded="expanded" :episodes="episodes" />
+        </transition>
+      </div>
     </div>
     <Loader v-else />
   </Modal>
@@ -30,12 +38,14 @@ import { reactive, toRefs, onMounted } from 'vue'
 import axios from 'axios'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
+import Episodes from '@/components/Episodes.vue'
 import Loader from '@/components/Loader.vue'
 import Modal from '@/components/Modal.vue'
 
 export default {
-  naem: 'Details',
+  name: 'Details',
   components: {
+    Episodes,
     Loader,
     Modal
   },
@@ -44,12 +54,23 @@ export default {
     const data = reactive({
       id: 0,
       character: {},
-      loading: false
+      expanded: false,
+      episodes: [],
+      loading: true,
+      loadingEpisodes: true
     })
 
     onMounted(() => {
       eventBus.$on('loadCharacter', (character) => {
-        loadCharacter(character)
+        if (data.character.id !== character.id) {
+          data.character = {}
+          data.expanded = false
+          data.episodes = []
+          data.loading = true
+          loadCharacter(character)
+        }
+
+        eventBus.$emit('onModalOpen', true)
       })
     })
 
@@ -67,6 +88,48 @@ export default {
         }
 
         console.error('Error happened while fetching via API', error)
+      }
+    }
+
+    const loadEpisolde = async (url) => {
+      try {
+        const response = await axios.get(url)
+
+        if (response.data) {
+          return response.data
+        }
+      } catch (error) {
+        if (error.response.data.error) {
+          return {
+            error: error.response.data.error
+          }
+        }
+
+        console.error('Error happened while fetching via API', error)
+      }
+    }
+
+    const toggleEpisodes = async () => {
+      if (data.expanded) {
+        data.expanded = false
+      } else {
+        if (!data.episodes.length) {
+          for (let i = 0; i < data.character.episode.length; i++) {
+            const url = data.character.episode[i]
+
+            const episode = await loadEpisolde(url)
+
+            if (episode.error) {
+              console.log(episode.error)
+            } else {
+              data.episodes.push(episode)
+            }
+          }
+
+          data.loadingEpisodes = false
+        }
+
+        data.expanded = true
       }
     }
 
@@ -100,13 +163,25 @@ export default {
     return {
       ...toRefs(data),
       ...utils(),
-      getInfo
+      getInfo,
+      toggleEpisodes
     }
   }
 }
 </script>
 
 <style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0);
+}
+
 .figure {
   position: relative;
   max-width: 80%;
@@ -140,6 +215,10 @@ export default {
 
   .tag {
     margin-top: 0;
+
+    @include medium-up {
+      font-size: var(--body-font-size);
+    }
   }
 }
 
@@ -209,5 +288,23 @@ export default {
 
 .col-value {
   width: 60%;
+}
+
+.details__episodes {
+  text-align: center;
+}
+
+.episodes__action {
+  overflow: hidden;
+  display: inline-flex;
+  max-width: 100%;
+  padding: var(--spacing-half) var(--spacing);
+  border-radius: 4px;
+  margin: var(--spacing) auto;
+  background-color: var(--blue);
+
+  &:focus {
+    outline-color: var(--blue-dark);
+  }
 }
 </style>

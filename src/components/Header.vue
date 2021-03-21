@@ -24,7 +24,8 @@ export default {
 
 <style lang="scss">
 .header {
-  --header-title-size: 28px;
+  --header-title-size-s: 28px;
+  --header-title-size: 34px;
   --header-title-color: var(--blue);
 
   background-color: var(--black);
@@ -35,6 +36,11 @@ export default {
 
     padding-top: var(--spacing-half);
     padding-bottom: var(--spacing-half);
+
+    @include medium-up {
+      padding-top: var(--spacing);
+      padding-bottom: var(--spacing);
+    }
   }
 }
 
@@ -45,19 +51,26 @@ export default {
 .title {
   margin-left: var(--spacing);
   font-family: var(--title-font-family);
-  font-size: var(--header-title-size);
+  font-size: var(--header-title-size-s);
   line-height: 125%;
   color: var(--header-title-color);
   text-shadow: var(--white) 0px 0px 1px, var(--white) 0px 0px 6px, var(--white) 0px 0px 2px;
+
+  @include medium-up {
+    font-size: var(--header-title-size);
+  }
 }
 
 .logo__asset {
   --logo-size-s: 40px;
-  --logo-size-m: 60px;
   --logo-size: 80px;
 
   display: block;
   width: var(--logo-size-s);
   height: auto;
+
+  @include medium-up {
+    width: var(--logo-size);
+  }
 }
 </style>
