@@ -14,12 +14,14 @@
           @input="updateSearchKey($event.target.value)"
         />
         <button type="submit" class="submit">
-          {{ search !== '' ? 'Go' : 'Feeling lucky?' }}
+          {{ search && search !== '' ? 'Go' : 'Feeling lucky?' }}
         </button>
       </div>
     </div>
     <div v-if="key" class="field__row search-keys">
-      <router-link :to="{ path: '/', query: {} }" class="clear-search">{{ key }}</router-link>
+      <router-link :to="{ path: '/', query: {} }" class="clear-search" title="Click to clear search">
+        {{ key }}
+      </router-link>
     </div>
   </form>
 </template>
@@ -126,6 +128,22 @@ export default {
 }
 
 .clear-search {
+  position: relative;
   display: inline-block;
+  padding: 3px var(--spacing-half) 3px var(--spacing);
+  border: 2px solid var(--blue-dark);
+  line-height: 1;
+
+  &:before {
+    content: 'x';
+    position: absolute;
+    top: 50%;
+    left: var(--spacing-quarter);
+    transform: translateY(-50%);
+    font-weight: var(--bold-font-weight);
+    color: var(--blue-dark);
+    line-height: 1;
+    cursor: pointer;
+  }
 }
 </style>
