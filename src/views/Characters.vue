@@ -16,7 +16,12 @@
         </li>
       </ul>
       <p v-else v-html="error" class="error-text"></p>
-      <Pagination :currentPage="currentPage" :pages="information.pages" :nextPage="nextPage" @onPageChange="loadNextPage" />
+      <Pagination
+        :currentPage="currentPage"
+        :pages="information.pages"
+        :nextPage="nextPage"
+        @onPageChange="loadNextPage"
+      />
     </div>
   </section>
 </template>
@@ -24,16 +29,10 @@
 <script>
 import axios from 'axios'
 import { useRoute } from 'vue-router'
-import {
-  reactive,
-  toRefs,
-  watch,
-  computed,
-  onMounted
-} from 'vue'
-import Character from '../components/Character.vue'
-import Search from '../components/Search.vue'
-import Pagination from '../components/Pagination.vue'
+import { reactive, toRefs, watch, computed, onMounted } from 'vue'
+import Character from '@/components/Character.vue'
+import Search from '@/components/Search.vue'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
   name: 'Characters',
@@ -73,14 +72,12 @@ export default {
 
     const loadPage = async (page) => {
       try {
-        const response = await axios.get(`${api}?page=${page}&count=${data.qty}${data.search ? `&name=${data.search}` : ''}`)
-
+        const response = await axios.get(
+          `${api}?page=${page}&count=${data.qty}${data.search ? `&name=${data.search}` : ''}`
+        )
 
         if (response.data) {
-          const {
-            info,
-            results
-          } = response.data
+          const { info, results } = response.data
 
           data.information = { ...info }
           data.characters = results
@@ -95,7 +92,7 @@ export default {
     }
 
     const getCharacterIndex = (index) => {
-      return (index + 1) + (data.qty * (data.currentPage - 1))
+      return index + 1 + data.qty * (data.currentPage - 1)
     }
 
     const toggleModal = (data) => {
@@ -118,8 +115,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import './src/scss/_settings.scss';
-
 .characters {
   @include small-up {
     // color: purple;

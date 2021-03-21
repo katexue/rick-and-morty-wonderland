@@ -2,14 +2,13 @@
   <section class="errorPage container">
     <h1>404</h1>
     <p class="error-message">{{ msg }}</p>
-    <img :src="notfoundUrl" alt="404 not found image" />
+    <img src="@/assets/404.png" alt="404 not found image" />
   </section>
 </template>
 
 <script>
 import { reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import notfound from 'url:/src/assets/404.png'
 
 export default {
   props: {
@@ -21,8 +20,7 @@ export default {
   setup(props) {
     const route = useRoute()
     const data = reactive({
-      msg: props.errorMsg,
-      notfoundUrl: notfound
+      msg: props.errorMsg
     })
 
     if (route.params.errorMsg) {

@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import Header from './components/Header.vue'
-import Footer from './components/Footer.vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'App',
@@ -18,6 +18,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/scss/index.scss';
+
 :root {
   --header-h-s: 90px;
   --footer-h-s: 55px;

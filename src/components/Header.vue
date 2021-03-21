@@ -3,27 +3,21 @@
     <div class="container">
       <div class="logo">
         <router-link to="/" class="header__link">
-          <img :src="logoUrl" class="logo__asset" alt="Rick and Morty black logo icon" width="40" height="40" />
+          <Logo class="logo__asset" />
         </router-link>
       </div>
-      <router-link to="/" class="title header__link">
-        Rick and Morty Wonderland
-      </router-link>
+      <router-link to="/" class="title header__link">Rick and Morty Wonderland</router-link>
     </div>
   </header>
 </template>
 
 <script>
-import { ref } from 'vue'
-import logo from 'url:/src/assets/logo.svg'
+import Logo from '@/assets/logo.svg'
 
 export default {
-  setup() {
-    const logoUrl = ref(logo)
-
-    return {
-      logoUrl
-    }
+  name: 'Header',
+  components: {
+    Logo
   }
 }
 </script>
@@ -55,5 +49,15 @@ export default {
   line-height: 125%;
   color: var(--header-title-color);
   text-shadow: var(--white) 0px 0px 1px, var(--white) 0px 0px 6px, var(--white) 0px 0px 2px;
+}
+
+.logo__asset {
+  --logo-size-s: 40px;
+  --logo-size-m: 60px;
+  --logo-size: 80px;
+
+  display: block;
+  width: var(--logo-size-s);
+  height: auto;
 }
 </style>

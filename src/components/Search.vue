@@ -24,11 +24,12 @@
 
 <script>
 import { reactive, toRefs, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+// import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 export default {
   setup() {
-    const router = useRouter()
+    // const router = useRouter()
     const route = useRoute()
     const data = reactive({
       search: false,
