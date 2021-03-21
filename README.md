@@ -35,5 +35,7 @@ I also downgraded to the _working version_ mentioned in the first issue comments
 
 In the end I felt I have spent good amount of time on this and probably it doesn't worth me spending more time just trying to debug it and host it. I still had half of the test to be finished and I think that is more important.
 
+It certainly might be me just didn't config the whole thing properly as well. Keen to get some adivce from you.
+
 ## Other Notes and Design Decisions
 TODO
