@@ -32,6 +32,7 @@ export default {
     const closeModal = () => {
       data.modalOpen = false
       document.body.style.overflow = ''
+      eventBus.$emit('onModalClose')
     }
 
     onMounted(() => {
@@ -88,7 +89,8 @@ export default {
 }
 
 .modal__container {
-  --modal-spacing-top: var(--spacing-middle);
+  --modal-spacing-s: var(--spacing-middle);
+  --modal-spacing: var(--spacing-double);
 
   z-index: calc(var(--modal-z-index) + 2);
   overflow: hidden;
@@ -101,12 +103,16 @@ export default {
   // height: auto;
   // min-height: 80vh;
   height: 80vh;
-  padding-top: var(--modal-spacing-top);
-  padding-bottom: var(--modal-spacing-top);
-
+  // max-height: 680px;
+  padding-top: var(--modal-spacing-s);
+  padding-bottom: var(--modal-spacing-s);
   transform: translate(-50%, -50%);
-
   background-color: var(--white);
+
+  @include medium-up {
+    padding-top: var(--modal-spacing);
+    padding-bottom: var(--modal-spacing);
+  }
 }
 
 .modal__close {
@@ -121,14 +127,14 @@ export default {
   overflow: auto;
   // position: relative;
   width: calc(100% - var(--spacing-double));
-  height: calc(80vh - var(--modal-spacing-top) - var(--modal-spacing-top));
+  height: calc(80vh - var(--modal-spacing-s) - var(--modal-spacing-s));
   margin-left: auto;
   margin-right: auto;
 
-  // &:after {
-  //   position: absolute;
-
-  // }
+  @include medium-up {
+    width: calc(100% - var(--spacing-quad));
+    height: calc(80vh - var(--modal-spacing) - var(--modal-spacing));
+  }
 }
 
 .modal__content {

@@ -8,7 +8,7 @@
           type="search"
           name="name"
           aria-label="Search using character name"
-          placeholder="Type in character name to search"
+          placeholder="Type in name"
           class="field field--text"
           :value="search"
           @input="updateSearchKey($event.target.value)"
@@ -97,7 +97,7 @@ export default {
 }
 
 .field--text {
-  width: calc(100% - var(--submit-width) - var($spacing-quarter));
+  width: calc(100% - var(--submit-width) - var(--spacing-quarter));
   padding: var(--spacing-quarter);
   border: 1px solid var(--black);
   border-radius: 0;
@@ -117,6 +117,7 @@ export default {
   padding: var(--spacing-quarter) var(--spacing-half);
   align-self: stretch;
   align-items: center;
+  justify-content: center;
   text-shadow: var(--white) 0px 0px 1px;
   background: var(--charcoal);
   font-weight: var(--medium-font-weight);
