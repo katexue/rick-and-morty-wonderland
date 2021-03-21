@@ -11,7 +11,7 @@ npm i
 
 ## Running Locally
 ```
-npm run dev
+npm start
 ```
 
 ## Other Notes and Design Decisions

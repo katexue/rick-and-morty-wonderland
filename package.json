@@ -4,7 +4,7 @@
   "description": "It's Rick and Morty's wonderland yo",
   "scripts": {
     "build": "npx parcel build src/index.html --no-source-maps --no-cache",
-    "dev": "npx parcel src/index.html"
+    "start": "npx parcel src/index.html"
   },
   "author": "Kate",
   "license": "ISC",
