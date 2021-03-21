@@ -4,7 +4,7 @@
   "description": "It's Rick and Morty's wonderland yo",
   "scripts": {
     "start": "parcel build src/index.html --no-source-maps --no-cache",
-    "dev": "parcel src/index.html"
+    "dev": "parcel src/index.html --port 8080"
   },
   "author": "Kate",
   "license": "ISC",
@@ -14,12 +14,14 @@
     "@parcel/transformer-vue": "^2.0.0-beta.2",
     "@vue/compiler-sfc": "^3.0.7",
     "install": "^0.13.0",
-    "npm": "^7.6.3",
-    "parcel": "^2.0.0-beta.2"
+    "npm": "^7.6.3"
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "parcel": "^2.0.0-beta.2",
     "regenerator-runtime": "^0.13.7",
+    "serve-static": "^1.14.1",
     "vue": "^3.0.7",
     "vue-axios": "^3.2.4",
     "vue-loader": "^16.1.2",
