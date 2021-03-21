@@ -20,8 +20,12 @@
 
 :root {
   --black: #000;
+  --black-rgb: 0, 0, 0;
   --white: #fff;
   --charcoal: #111;
+  --grey: #888;
+  --grey-light: #ddd;
+  --grey-dark: #525252;
 
   --yellow: #f0e149;
   --yellow-rgb: 240, 225, 73;
@@ -35,6 +39,7 @@
   --green-dark-rgb: 82, 110, 45;
   --brown: #82491e;
   --brown-rgb: 130, 73, 30;
+  --pink-light: #f01193;
   --pink: #e89ac7;
   --pink-rgb: 232, 154, 199;
   --red: #fb6467;
@@ -185,7 +190,7 @@ p {
 }
 
 .container {
-  width: s.$max-viewport-width;
+  width: s.$max-viewport-width-s;
   max-width: 100%;
   padding: var(--spacing-double) var(--spacing);
   margin-left: auto;

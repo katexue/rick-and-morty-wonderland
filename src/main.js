@@ -6,8 +6,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-// Create messaging bus
-// window.bus = createApp( {} )
-
 // Instantiate application
-createApp(App).use(router).use(store).use(VueAxios, axios).mount('#app')
+const app = createApp(App)
+
+app.use(router).use(store).use(VueAxios, axios).mount('#app')
