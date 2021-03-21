@@ -113,6 +113,8 @@ export default {
       if (data.expanded) {
         data.expanded = false
       } else {
+        data.expanded = true
+
         if (!data.episodes.length) {
           for (let i = 0; i < data.character.episode.length; i++) {
             const url = data.character.episode[i]
@@ -128,8 +130,6 @@ export default {
 
           data.loadingEpisodes = false
         }
-
-        data.expanded = true
       }
     }
 
