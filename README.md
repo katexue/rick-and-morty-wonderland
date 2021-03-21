@@ -7,9 +7,13 @@ Netlify link is available [here](#toreplace).
 I think heroku is not really for a static site, there is no server required in this test. Hence deployed to Netlify.
 
 ## Project setup
+1. Install dependencies
 ```
 yarn install
 ```
+2. Rename `.env.local.example` to `.env.local` for local development.
+
+    Usually you will fill in the local/staging/dev api endpoint, but in this test we will just use the one api endpoint provided.
 
 ### Compiles and hot-reloads for development
 ```

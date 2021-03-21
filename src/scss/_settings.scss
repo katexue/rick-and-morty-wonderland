@@ -4,7 +4,7 @@ $breakpoint-medium: 768px;
 $breakpoint-large: 1024px;
 $breakpoint-extra-large: 1200px;
 
-$max-viewport-width-s: 860px;
+$max-viewport-width-s: 800px;
 $max-viewport-width: $breakpoint-large;
 
 @mixin extra-small-up() {

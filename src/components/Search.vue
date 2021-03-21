@@ -1,5 +1,5 @@
 <template>
-  <form action="" class="search form">
+  <form action="" class="search form" @submit.prevent="searchCharacters()">
     <div class="field__row">
       <label for="character-search" class="label">Search characters by name</label>
       <div class="field__group">
@@ -10,9 +10,11 @@
           aria-label="Search using character name"
           placeholder="Type in character name to search"
           class="field field--text"
+          :value="search"
+          @input="updateSearchKey($event.target.value)"
         />
         <button type="submit" class="submit">
-          {{ search ? 'Go' : 'Feeling lucky?' }}
+          {{ search !== '' ? 'Go' : 'Feeling lucky?' }}
         </button>
       </div>
     </div>
@@ -24,27 +26,37 @@
 
 <script>
 import { reactive, toRefs, watch } from 'vue'
-// import { useRouter, useRoute } from 'vue-router'
 import { useRoute } from 'vue-router'
 
 export default {
-  setup() {
+  setup(props, { emit }) {
     // const router = useRouter()
     const route = useRoute()
     const data = reactive({
-      search: false,
+      search: '',
       key: route.query.name
     })
+
+    const updateSearchKey = (val) => {
+      data.search = val
+    }
+
+    const searchCharacters = () => {
+      emit('onSearchChange', data.search)
+    }
 
     watch(
       () => route.query.name,
       (search) => {
         data.key = search
+        data.search = search
       }
     )
 
     return {
-      ...toRefs(data)
+      ...toRefs(data),
+      updateSearchKey,
+      searchCharacters
     }
   }
 }

@@ -1,18 +1,22 @@
 <template>
   <div class="character" :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]">
     <div class="character__id">{{ index }}.</div>
-    <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
+    <div class="avatar-wrap">
+      <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
+    </div>
     <button @click="toggleCharacter()" class="character__action">
       <div class="character__name">
         {{ character.name }}
       </div>
-      <div class="tag" :class="`tag--${type}`">{{ species }}</div>
+      <div class="tag" :class="`tag--${getTypeSlug(character.species)}`">{{ species }}</div>
     </button>
   </div>
 </template>
 
 <script>
-import { reactive, toRefs, computed } from 'vue'
+import { reactive, toRefs } from 'vue'
+import eventBus from '@/plugins/eventBus'
+import utils from '@/mixin'
 
 export default {
   props: {
@@ -27,20 +31,22 @@ export default {
       default: 1
     }
   },
-  setup(props, { emit }) {
-    const cData = reactive({
-      species: props.character.species,
-      type: computed(() => {
-        return cData.species.toLowerCase().replace(/\s/g, '')
-      })
+  setup(props) {
+    const data = reactive({
+      species: props.character.species
     })
 
     const toggleCharacter = () => {
-      emit('onModalOpen', { id: props.character.id })
+      eventBus.$emit('onModalOpen', true)
+      eventBus.$emit('loadCharacter', {
+        id: props.character.id,
+        name: props.character.name
+      })
     }
 
     return {
-      ...toRefs(cData),
+      ...utils(),
+      ...toRefs(data),
       toggleCharacter
     }
   }
@@ -59,6 +65,27 @@ export default {
   justify-content: space-between;
   padding-left: var(--spacing);
 
+  &--dead {
+    .avatar-wrap {
+      position: relative;
+      &:before {
+        content: 'Dead';
+        z-index: 2;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: var(--grey-dark);
+      }
+
+      .avatar {
+        z-index: 1;
+        opacity: 0.4;
+      }
+    }
+  }
+
   .item-large & {
     padding-left: calc(var(--spacing) + var(--spacing-quarter));
   }
@@ -74,10 +101,13 @@ export default {
   font-size: var(--body-font-size-small);
 }
 
-.avatar {
+.avatar-wrap {
   width: var(--avatar-size-s);
+}
+
+.avatar {
+  width: 100%;
   height: auto;
-  // margin-right: var(--spacing-half);
 
   .character--1 & {
     box-shadow: 0px 0px 10px var(--blue);
