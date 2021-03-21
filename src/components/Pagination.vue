@@ -1,29 +1,38 @@
 <template>
   <div class="pagination">
     <button :disabled="prevPage <= 0" @click="changePage(prevPage)" class="page-prev">
-      <svg class="page__icon icon-prev" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/></svg>
+      <PrevIcon class="page__icon icon-prev" />
     </button>
     <button v-if="prevPage > 2" @click="changePage(1)" class="page-prev">1</button>
     <div v-if="prevSeparator" class="separator">...</div>
-    <button v-for="page in activePages" :key="`page${page}`" :class="{ 'page-current': currentPage === page }" @click="changePage(page)" class="page">
+    <button
+      v-for="page in activePages"
+      :key="`page${page}`"
+      :class="{ 'page-current': currentPage === page }"
+      @click="changePage(page)"
+      class="page"
+    >
       {{ page }}
     </button>
     <div v-if="nextSeparator" class="separator">...</div>
     <button v-if="pages - nextPage > 1" @click="changePage(pages)" class="page-prev">{{ pages }}</button>
     <button :disabled="nextPage >= pages" @click="changePage(nextPage)" class="page page-prev">
-      <svg class="page__icon icon-next" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
+      <NextIcon class="page__icon icon-next" />
     </button>
   </div>
 </template>
 
 <script>
-import {
-  reactive,
-  toRefs,
-  computed
-} from 'vue'
+import { reactive, toRefs, computed } from 'vue'
+import PrevIcon from '@/assets/chevron-left.svg'
+import NextIcon from '@/assets/chevron-right.svg'
 
 export default {
+  name: 'Pagination',
+  components: {
+    PrevIcon,
+    NextIcon
+  },
   props: {
     currentPage: {
       type: Number,

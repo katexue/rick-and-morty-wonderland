@@ -2,8 +2,8 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
 // Pages
-import Characters from '../pages/Characters.vue'
-import NotFound from '../pages/NotFound.vue'
+import Characters from '../views/Characters.vue'
+import NotFound from '../views/NotFound.vue'
 
 // Configuration
 const routes = [
@@ -44,7 +44,7 @@ const routes = [
     name: 'Not-Found',
     component: NotFound,
     props: true
-  },
+  }
 ]
 
 // Routes
@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
     next({
       name: 'Error',
       params: {
-        errorMsg: 'Ooooops, looks like the world\'s gone banana 🍌'
+        errorMsg: '"Ooooops, looks like the world\'s gone banana 🍌"'
       },
       replace: true
     })

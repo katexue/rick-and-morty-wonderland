@@ -1,29 +1,24 @@
 import { createStore } from 'vuex'
 
-const modules = {
-}
+const modules = {}
 
 // Separate STATE function for easier default state value reset.
-const STATE = () => {
-}
+const STATE = () => {}
 
 const state = STATE()
 
-const actions = {
-}
+const actions = {}
 
-const mutations = {
-}
+const mutations = {}
 
-const getters = {
-}
+const getters = {}
 
 const store = createStore({
   modules,
   actions,
   mutations,
   getters,
-  state,
+  state
 })
 
 export default store

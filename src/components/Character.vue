@@ -1,6 +1,6 @@
 <template>
   <div class="character" :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]">
-    <div class="character__id">{{ index }}. </div>
+    <div class="character__id">{{ index }}.</div>
     <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
     <button @click="toggleCharacter()" class="character__action">
       <div class="character__name">
