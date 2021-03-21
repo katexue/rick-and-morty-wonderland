@@ -21,7 +21,7 @@ npm run dev
 ```
 
 ### Why not parcel
-Initially I have setup Vue3 with Parcel, and it works locally with no issue. You can check this original repo configured using Parcel + Vue3 here. The setup and local dev instructions are in `README.md` file
+Initially I have setup Vue3 with Parcel, and it works locally with no issue. You can check this [original repo configured using Parcel + Vue3 here](https://github.com/katexue/rick-and-morty-wonderland/tree/parcel). The setup and local dev instructions are in `README.md` file
 
 The reason I switched to Vue Cli half way throught the test is that I had issue deploying to both Heroku and Netlify.
 
