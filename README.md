@@ -48,4 +48,14 @@ In the end I felt I have spent good amount of time on this and probably it doesn
 It certainly might be me just didn't config the whole thing properly as well. Keen to get some adivce from you.
 
 ## Other Notes and Design Decisions
-TODO
+1. `Rick and Morty Wonderland` title in heading is an actual font face 🦄
+2. `Feeling lucky?` will open a random character's modal window
+3. Search `Kate` to check some error message 
+4. Rick and Morty has special glow around avatar, so special.
+5. Tested on:
+    - Chrome latest
+    - Firefox latest
+    - Safari latest
+    - iPhone X (my phone)
+    - Major mobile viewport using Chrome dev tool
+6. It's definately not perfect, it was a great learning experience. I appreciate any feedback!

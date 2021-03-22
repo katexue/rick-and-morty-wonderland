@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
     next({
       name: 'Error',
       params: {
-        errorMsg: '"Ooooops, looks like the world\'s gone banana 🍌"'
+        errorMsg: `Ooooops, looks like the world's gone banana 🍌`
       },
       replace: true
     })
