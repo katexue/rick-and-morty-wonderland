@@ -3,7 +3,7 @@
     <button :disabled="prevPage <= 0" @click="changePage(prevPage)" class="page-prev">
       <PrevIcon class="page__icon icon-prev" />
     </button>
-    <button v-if="prevPage > 2" @click="changePage(1)" class="page-prev">1</button>
+    <button v-if="prevPage > 2" @click="changePage(1)" class="page">1</button>
     <div v-if="prevSeparator" class="separator">...</div>
     <button
       v-for="page in activePages"
@@ -15,7 +15,7 @@
       {{ page }}
     </button>
     <div v-if="nextSeparator" class="separator">...</div>
-    <button v-if="pages - nextPage > 1" @click="changePage(pages)" class="page-prev">{{ pages }}</button>
+    <button v-if="pages - nextPage > 1" @click="changePage(pages)" class="page">{{ pages }}</button>
     <button :disabled="nextPage >= pages" @click="changePage(nextPage)" class="page page-prev">
       <NextIcon class="page__icon icon-next" />
     </button>
@@ -98,7 +98,7 @@ export default {
 
 <style lang="scss">
 .pagination {
-  --page-transition: 200ms;
+  --page-transition: 120ms;
 
   display: flex;
   align-items: center;
@@ -115,9 +115,16 @@ export default {
   width: var(--page-size);
   height: var(--page-size);
   line-height: 1;
+  transform-origin: center bottom;
 
   &:focus {
     outline: none;
+  }
+
+  &:hover {
+    &:after {
+      height: var(--page-size);
+    }
   }
 
   &:after {
@@ -138,13 +145,11 @@ export default {
 .page-next {
   &:disabled {
     opacity: 0.5;
-    cursor: disabled;
+    cursor: not-allowed;
   }
 }
 
 .page-current {
-  transform-origin: left center;
-
   &:after {
     height: var(--page-size);
   }

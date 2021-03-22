@@ -3,7 +3,7 @@
     <div class="container">
       <Search @onSearchChange="searchCharacters" />
       <h1 class="heading">Characters in Rick and Morty</h1>
-      <ul v-if="characters.length && !loading" class="list">
+      <ul v-if="characters.length && !loading" :class="{ 'list-ready': !loading }" class="list">
         <li
           v-for="(character, index) in characters"
           :key="`character-${character.id}`"
@@ -105,6 +105,8 @@ const charactersSetup = () => {
   }
 
   const loadPage = async (page) => {
+    data.loading = true
+
     try {
       const response = await axios.get(
         `${api}?page=${page}&count=${data.qty}${data.search ? `&name=${data.search}` : ''}`
@@ -115,7 +117,6 @@ const charactersSetup = () => {
 
         data.information = { ...info }
         data.characters = results
-        data.loading = false
       }
     } catch (error) {
       if (error.response.data.error) {
@@ -123,6 +124,8 @@ const charactersSetup = () => {
       }
 
       console.error('Error happened while fetching via API', error)
+    } finally {
+      data.loading = false
     }
   }
 

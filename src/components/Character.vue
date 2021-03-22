@@ -1,14 +1,15 @@
 <template>
-  <div class="character" :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]">
+  <div :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]" class="character">
     <div class="character__id">{{ index }}.</div>
-    <div @click="toggleCharacter()" class="avatar-wrap">
-      <img :src="character.image" :alt="`${character.name} avatar image`" class="avatar" />
+    <div :class="{ 'avatar-loading': loading[character.id] }" @click="toggleCharacter()" class="avatar-wrap">
+      <img :src="character.image" :alt="`${character.name} avatar image`" @load="onAvatarLoad" class="avatar" />
     </div>
-    <button @click="toggleCharacter()" class="character__action">
+    <button @click="toggleCharacter()" class="character__action" title="Click to see details!">
       <div class="character__name">
         {{ character.name }}
       </div>
       <div class="tag" :class="`tag--${getTypeSlug(character.species)}`">{{ species }}</div>
+      <OpenInModal class="action__icon" />
     </button>
   </div>
 </template>
@@ -17,6 +18,7 @@
 import { reactive, toRefs } from 'vue'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
+import OpenInModal from '@/assets/open-in-modal.svg'
 
 export default {
   props: {
@@ -31,9 +33,15 @@ export default {
       default: 1
     }
   },
+  components: {
+    OpenInModal
+  },
   setup(props) {
     const data = reactive({
-      species: props.character.species
+      species: props.character.species,
+      loading: {
+        [props.character.id]: true
+      }
     })
 
     const toggleCharacter = () => {
@@ -44,10 +52,18 @@ export default {
       })
     }
 
+    const onAvatarLoad = () => {
+      data.loading = {
+        ...data.loading,
+        [props.character.id]: false
+      }
+    }
+
     return {
       ...toRefs(data),
       ...utils(),
-      toggleCharacter
+      toggleCharacter,
+      onAvatarLoad
     }
   }
 }
@@ -64,14 +80,21 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding-left: var(--spacing);
+  transition: transform 150ms ease-in;
 
   @include small-up {
     padding-left: var(--spacing-middle);
   }
 
+  &:hover,
+  &:focus {
+    transform: scale(1.03);
+  }
+
   &--dead {
     .avatar-wrap {
       position: relative;
+
       &:before {
         content: 'Dead';
         z-index: 2;
@@ -119,6 +142,15 @@ export default {
   @include medium-up {
     width: var(--avatar-size);
   }
+
+  &.avatar-loading {
+    height: var(--avatar-size-s);
+    background-color: var(--grey-light);
+
+    @include medium-up {
+      height: var(--avatar-size);
+    }
+  }
 }
 
 .avatar {
@@ -135,21 +167,43 @@ export default {
 }
 
 .character__action {
+  --action-icon-w-s: 24px;
+  --action-icon-w: 30px;
+
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   width: calc(100% - var(--avatar-size-s) - var(--spacing-half));
-  padding: 0;
+  padding: var(--spacing-quarter) calc(var(--action-icon-w-s) + var(--spacing-quarter)) var(--spacing-quarter) 0;
   text-align: left;
 
   @include medium-up {
     flex-direction: row;
     align-items: center;
     width: calc(100% - var(--avatar-size) - var(--spacing));
-    padding: var(--spacing-half) 0;
+    padding: var(--spacing-small) calc(var(--action-icon-w) + var(--spacing-quarter)) var(--spacing-small) 0;
+  }
+
+  &:hover,
+  &:focus {
+    outline: none;
+  }
+}
+
+.action__icon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: var(--action-icon-w-s);
+
+  transform: translateY(-50%);
+
+  @include medium-up {
+    width: var(--action-icon-w);
   }
 }
 

@@ -69,6 +69,14 @@ export default {
   --submit-width: 100px;
 
   margin-bottom: var(--spacing-middle);
+
+  @include medium-up {
+    margin-bottom: var(--spacing-double);
+  }
+
+  @include large-up {
+    margin-bottom: var(--spacing-triple);
+  }
 }
 
 .field__group {

@@ -42,19 +42,23 @@ export default {
   justify-content: space-between;
 
   & + .episode {
-    margin-top: var(--spacing);
+    padding-top: var(--spacing-half);
+    border-top: 1px solid var(--grey-light);
+    margin-top: var(--spacing-half);
   }
 }
 
 .episode__id {
   font-size: var(--body-font-size-small);
   color: var(--green-dark);
+  font-weight: var(--medium-font-weight);
 }
 
 .episode__date {
   text-align: right;
   font-size: var(--body-font-size-small);
   color: var(--brown);
+  font-weight: var(--medium-font-weight);
 }
 
 .episode__name {
