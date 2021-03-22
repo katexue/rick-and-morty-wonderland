@@ -1,7 +1,7 @@
 <template>
   <section class="errorPage container">
-    <h1>404</h1>
-    <p class="error-message">{{ msg }}</p>
+    <h1 class="error-title">404 ERROR</h1>
+    <p class="error-message h3">{{ msg }}</p>
     <img src="@/assets/404.png" alt="404 not found image" />
   </section>
 </template>
@@ -14,7 +14,7 @@ export default {
   props: {
     errorMsg: {
       type: String,
-      default: 'Guess what!!!'
+      default: `The universe's gone BANANA 🍌`
     }
   },
   setup(props) {
@@ -33,6 +33,9 @@ export default {
 </script>
 
 <style lang="scss">
-.errorPage {
+.error-title {
+  font-family: var(--title-font-family);
+  color: var(--green);
+  text-shadow: var(--white) 0px 0px 3px, var(--green-dark) 0px 0px 6px;
 }
 </style>

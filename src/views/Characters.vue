@@ -115,12 +115,16 @@ const charactersSetup = () => {
       if (response.data) {
         const { info, results } = response.data
 
+        data.error = ''
         data.information = { ...info }
         data.characters = results
       }
     } catch (error) {
       if (error.response.data.error) {
         data.error = `This is quite the pickle, Morty...<br><span class="pickle">${data.search}</span> doesn't exist in this universe!`
+
+        data.information = {}
+        data.characters = []
       }
 
       console.error('Error happened while fetching via API', error)
