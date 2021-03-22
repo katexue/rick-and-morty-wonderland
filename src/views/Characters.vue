@@ -1,5 +1,5 @@
 <template>
-  <section class="characters">
+  <section v-bind="$attrs" class="characters">
     <div class="container">
       <Search @onSearchChange="searchCharacters" />
       <h1 class="heading">Characters in Rick and Morty</h1>
