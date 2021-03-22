@@ -3,7 +3,9 @@
     <div :class="{ 'modal--active': modalOpen }" class="modal">
       <div @click="closeModal()" class="modal-overlay"></div>
       <div class="modal__container">
-        <Close @click="closeModal()" class="modal__close" />
+        <button class="modal__close">
+          <Close @click="closeModal()" class="close__icon" />
+        </button>
         <div class="modal__inner">
           <div class="modal__content">
             <slot></slot>
@@ -116,12 +118,18 @@ export default {
 }
 
 .modal__close {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
   z-index: calc(var(--modal-z-index) + 2);
-
   position: absolute;
   top: 0;
   right: 0;
   width: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  margin: 0;
 
   @include medium-up {
     // top: var(--spacing-quarter);
