@@ -121,6 +121,13 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  width: 24px;
+
+  @include medium-up {
+    // top: var(--spacing-quarter);
+    // right: var(--spacing-quarter);
+    width: 40px;
+  }
 }
 
 .modal__inner {

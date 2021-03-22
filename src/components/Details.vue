@@ -12,11 +12,11 @@
           <div class="tag" :class="`tag--${getTypeSlug(character.species)}`">{{ character.species }}</div>
         </figcaption>
       </figure>
-      <div class="deatils__info">
+      <div class="details__info">
         <template v-for="(val, key) in character" :key="`${character.id}-info-${key}`">
           <div v-if="getInfo(key)" class="row">
             <div class="col col-heading">{{ getInfo(key).key }}</div>
-            <div class="col col-value">{{ getInfo(key).val }}</div>
+            <div :class="`col--${key}`" class="col col-value">{{ getInfo(key).val }}</div>
           </div>
         </template>
       </div>
@@ -29,7 +29,7 @@
         </transition>
       </div>
     </div>
-    <Loader v-else />
+    <Loader v-else class="details__loader" />
   </Modal>
 </template>
 
@@ -182,12 +182,31 @@ export default {
   transform: scaleY(0);
 }
 
+.details {
+  @include medium-up {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: var(--spacing-half);
+  }
+}
+
+.details__loader {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .figure {
   position: relative;
   max-width: 80%;
   margin-bottom: var(--spacing);
   margin-left: auto;
   margin-right: auto;
+
+  @include medium-up {
+    margin: 0;
+    width: 40%;
+  }
 }
 
 .figure__asset {
@@ -254,20 +273,26 @@ export default {
   }
 }
 
+.details__info {
+  @include medium-up {
+    margin: 0;
+    width: calc(60% - var(--spacing));
+  }
+}
+
 .row {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
 
   &:first-of-type {
-    .col-heading {
-      border-top-color: var(--blue-dark);
+    .col-value {
+      border-top: 1px solid var(--blue-dark);
     }
-  }
 
-  &:last-of-type {
-    .col {
+    .col-heading {
       border-bottom: 1px solid var(--blue-dark);
+      border-top-color: var(--blue-dark);
     }
   }
 }
@@ -276,11 +301,11 @@ export default {
   align-self: stretch;
   padding: var(--spacing-quarter) var(--spacing-half);
   border: 1px solid var(--blue-dark);
-  border-bottom: none;
 }
 
 .col-heading {
   width: 40%;
+  border-bottom: none;
   border-top-color: var(--white);
   background-color: var(--blue-dark);
   color: var(--white);
@@ -288,10 +313,19 @@ export default {
 
 .col-value {
   width: 60%;
+  border-top: none;
+}
+
+.col--name {
+  font-weight: var(--medium-font-weight);
 }
 
 .details__episodes {
   text-align: center;
+
+  @include medium-up {
+    width: 100%;
+  }
 }
 
 .episodes__action {
@@ -301,10 +335,10 @@ export default {
   padding: var(--spacing-half) var(--spacing);
   border-radius: 4px;
   margin: var(--spacing) auto;
-  background-color: var(--blue);
+  background-color: var(--green);
 
   &:focus {
-    outline-color: var(--blue-dark);
+    outline-color: var(--green-dark);
   }
 }
 </style>
