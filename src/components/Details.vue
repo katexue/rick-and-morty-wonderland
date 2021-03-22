@@ -5,8 +5,13 @@
       :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]"
       class="details"
     >
-      <figure class="figure">
-        <img class="figure__asset avatar" :src="character.image" :alt="`${character.name} image`" />
+      <figure :class="{ 'avatar-loading': avatarLoading[character.id] }" class="figure">
+        <img
+          @load="onAvatarLoaded"
+          :src="character.image"
+          :alt="`${character.name} image`"
+          class="figure__asset avatar"
+        />
         <figcaption class="figure__caption">
           <div class="tag tag--status">{{ character.status }}</div>
           <div class="tag" :class="`tag--${getTypeSlug(character.species)}`">{{ character.species }}</div>
@@ -57,7 +62,8 @@ export default {
       expanded: false,
       episodes: [],
       loading: true,
-      loadingEpisodes: true
+      loadingEpisodes: true,
+      avatarLoading: {}
     })
 
     onMounted(() => {
@@ -67,6 +73,10 @@ export default {
           data.expanded = false
           data.episodes = []
           data.loading = true
+          data.avatarLoading = {
+            [character.id]: true
+          }
+
           loadCharacter(character)
         }
 
@@ -160,11 +170,19 @@ export default {
       }
     }
 
+    const onAvatarLoaded = () => {
+      data.avatarLoading = {
+        ...data.avatarLoading,
+        [data.character.id]: false
+      }
+    }
+
     return {
       ...toRefs(data),
       ...utils(),
       getInfo,
-      toggleEpisodes
+      toggleEpisodes,
+      onAvatarLoaded
     }
   }
 }
@@ -197,15 +215,29 @@ export default {
 }
 
 .figure {
+  --figure-w-s: 80%;
+  --figure-w: 40%;
+
   position: relative;
-  max-width: 80%;
+  max-width: var(--figure-w-s);
   margin-bottom: var(--spacing);
   margin-left: auto;
   margin-right: auto;
 
   @include medium-up {
     margin: 0;
-    width: 40%;
+    width: var(--figure-w);
+  }
+
+  &.avatar-loading {
+    height: 0;
+    padding-bottom: var(--figure-w-s);
+    background-color: var(--grey-light);
+
+    @include medium-up {
+      margin: 0;
+      padding-bottom: var(--figure-w);
+    }
   }
 }
 

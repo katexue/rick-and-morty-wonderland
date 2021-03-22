@@ -2,7 +2,7 @@
   <div :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]" class="character">
     <div class="character__id">{{ index }}.</div>
     <div :class="{ 'avatar-loading': loading[character.id] }" @click="toggleCharacter()" class="avatar-wrap">
-      <img :src="character.image" :alt="`${character.name} avatar image`" @load="onAvatarLoad" class="avatar" />
+      <img :src="character.image" :alt="`${character.name} avatar image`" @load="onAvatarLoaded" class="avatar" />
     </div>
     <button @click="toggleCharacter()" class="character__action" title="Click to see details!">
       <div class="character__name">
@@ -52,7 +52,7 @@ export default {
       })
     }
 
-    const onAvatarLoad = () => {
+    const onAvatarLoaded = () => {
       data.loading = {
         ...data.loading,
         [props.character.id]: false
@@ -63,7 +63,7 @@ export default {
       ...toRefs(data),
       ...utils(),
       toggleCharacter,
-      onAvatarLoad
+      onAvatarLoaded
     }
   }
 }
@@ -104,6 +104,12 @@ export default {
         transform: translate(-50%, -50%);
         text-align: center;
         color: var(--grey-dark);
+      }
+
+      &.avatar-loading {
+        &:before {
+          display: none;
+        }
       }
 
       .avatar {
@@ -150,6 +156,27 @@ export default {
     @include medium-up {
       height: var(--avatar-size);
     }
+
+    &:after {
+      font-size: var(--body-font-size-extra-small);
+
+      @include medium-up {
+        font-size: var(--body-font-size-small);
+      }
+    }
+  }
+}
+
+.avatar-loading {
+  position: relative;
+
+  &:after {
+    content: 'Loading...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--grey);
   }
 }
 
