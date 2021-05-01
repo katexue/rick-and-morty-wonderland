@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { reactive, toRefs, computed, onMounted } from 'vue'
+import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { useStore } from 'vuex'
 import Character from '@/components/Character.vue'
 import Search from '@/components/Search.vue'
@@ -70,7 +70,9 @@ const charactersSetup = () => {
   document.title = process.env.VUE_APP_TITLE_PREFIX ? `${process.env.VUE_APP_TITLE_PREFIX} ${pageTitle}` : pageTitle
 
   onMounted(async () => {
-    loadPage(data.currentPage)
+    if (route.meta.reloadPage || !store.getters['characters/getCharacters'].length) {
+      loadPage(data.currentPage)
+    }
   })
 
   onBeforeRouteUpdate(async (to, from) => {

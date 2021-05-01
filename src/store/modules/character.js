@@ -5,7 +5,8 @@ const STATE = () => {
     character: {},
     error: '',
     loading: true,
-    avatarLoading: {}
+    avatarLoading: {},
+    episodeExpanded: false
   }
 }
 
@@ -16,7 +17,8 @@ const getters = {
   getCharacter: (state) => state.character,
   getErrorMessage: (state) => state.error,
   getLoadingStatus: (state) => state.loading,
-  getAvatarLoading: (state) => state.avatarLoading
+  getAvatarLoading: (state) => state.avatarLoading,
+  getEpisodeExpanded: (state) => state.episodeExpanded
 }
 
 // Mutations
@@ -35,6 +37,9 @@ const mutations = {
       ...state.avatarLoading,
       ...avatarLoading
     }
+  },
+  setEpisodeExpanded(state, episodeExpanded) {
+    state.episodeExpanded = episodeExpanded
   }
 }
 
@@ -45,6 +50,7 @@ const actions = {
     commit('setErrorMessage', '')
     commit('setCharacter', {})
     commit('setAvatarLoading', { [id]: true })
+    commit('setEpisodeExpanded', false)
   },
   async loadCharacter({ dispatch, commit }, target) {
     dispatch('resetStore', target.id)
