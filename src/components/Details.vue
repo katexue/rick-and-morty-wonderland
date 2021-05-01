@@ -30,7 +30,13 @@
           {{ expanded ? 'Hide' : 'Show' }} {{ character.episode.length }} episodes {{ expanded ? '-' : '+' }}
         </button>
         <transition name="fade">
-          <Episodes v-show="expanded" :loading="loadingEpisodes" :expanded="expanded" :episodes="episodes" />
+          <Episodes
+            v-show="expanded"
+            :loading="loadingEpisodes"
+            :expanded="expanded"
+            :episodes="episodes"
+            :error="episodesError"
+          />
         </transition>
       </div>
     </div>
@@ -41,7 +47,6 @@
 
 <script>
 import { reactive, toRefs, onMounted, computed } from 'vue'
-import axios from 'axios'
 import { useStore } from 'vuex'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
@@ -60,20 +65,20 @@ export default {
     const store = useStore()
     const data = reactive({
       id: 0,
-      expanded: false,
-      episodes: [],
-      loadingEpisodes: true,
-      avatarLoading: {}
+      expanded: false
     })
     const character = computed(() => store.getters['character/getCharacter'])
     const loading = computed(() => store.getters['character/getLoadingStatus'])
     const error = computed(() => store.getters['character/getErrorMessage'])
     const avatarLoading = computed(() => store.getters['character/getAvatarLoading'])
+    const episodes = computed(() => store.getters['episodes/getEpisodes'])
+    const loadingEpisodes = computed(() => store.getters['episodes/getLoadingStatus'])
+    const episodesError = computed(() => store.getters['episodes/getErrorMessage'])
 
     onMounted(() => {
       eventBus.$on('loadCharacter', (characterData) => {
-        if (store.state.character.character.id !== characterData.id) {
-          data.episodes = []
+        if (store.getters['character/getCharacter'].id !== characterData.id) {
+          store.dispatch('episodes/resetStore')
           data.expanded = false
           loadCharacter(characterData)
         }
@@ -86,44 +91,14 @@ export default {
       await store.dispatch('character/loadCharacter', target)
     }
 
-    const loadEpisolde = async (url) => {
-      try {
-        const response = await axios.get(url)
-
-        if (response.data) {
-          return response.data
-        }
-      } catch (error) {
-        if (error.response.data.error) {
-          return {
-            error: error.response.data.error
-          }
-        }
-
-        console.error('Error happened while fetching via API', error)
-      }
-    }
-
     const toggleEpisodes = async (character) => {
       if (data.expanded) {
         data.expanded = false
       } else {
         data.expanded = true
 
-        if (!data.episodes.length) {
-          for (let i = 0; i < character.episode.length; i++) {
-            const url = character.episode[i]
-
-            const episode = await loadEpisolde(url)
-
-            if (episode.error) {
-              console.log(episode.error)
-            } else {
-              data.episodes.push(episode)
-            }
-          }
-
-          data.loadingEpisodes = false
+        if (!store.getters['episodes/getEpisodes'].length) {
+          await store.dispatch('episodes/loadEpisodes', character.episode)
         }
       }
     }
@@ -168,7 +143,10 @@ export default {
       avatarLoading,
       character,
       error,
-      loading
+      loading,
+      episodes,
+      loadingEpisodes,
+      episodesError
     }
   }
 }
