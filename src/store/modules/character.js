@@ -46,13 +46,7 @@ const actions = {
     commit('setCharacter', {})
     commit('setAvatarLoading', { [id]: true })
   },
-  async loadCharacter({ dispatch, commit, state }, target) {
-    if (state.character.id === target.id) {
-      return false
-    }
-
-    // console.log('Load new character!')
-
+  async loadCharacter({ dispatch, commit }, target) {
     dispatch('resetStore', target.id)
 
     try {
