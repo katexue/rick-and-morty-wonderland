@@ -75,9 +75,8 @@ export default {
         if (store.state.character.character.id !== characterData.id) {
           data.episodes = []
           data.expanded = false
+          loadCharacter(characterData)
         }
-
-        loadCharacter(characterData)
 
         eventBus.$emit('onModalOpen', true)
       })
