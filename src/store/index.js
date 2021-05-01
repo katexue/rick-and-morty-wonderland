@@ -2,13 +2,13 @@ import { createStore, createLogger } from 'vuex'
 import characters from './modules/characters'
 import character from './modules/character'
 import episodes from './modules/episodes'
-// import modal from './modules/modal'
+import modal from './modules/modal'
 
 const modules = {
   characters,
   character,
-  episodes
-  // modal
+  episodes,
+  modal
 }
 
 // Separate STATE function for easier default state value reset.

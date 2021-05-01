@@ -83,7 +83,7 @@ export default {
           loadCharacter(characterData)
         }
 
-        eventBus.$emit('onModalOpen', true)
+        // store.dispatch('modal/openModal', () => (document.body.style.overflow = 'hidden'))
       })
     })
 
