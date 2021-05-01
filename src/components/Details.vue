@@ -1,13 +1,13 @@
 <template>
   <Modal>
     <div
-      v-if="!loading && character.status"
+      v-if="!loading && error === ''"
       :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]"
       class="details"
     >
       <figure :class="{ 'avatar-loading': avatarLoading[character.id] }" class="figure">
         <img
-          @load="onAvatarLoaded"
+          @load="onAvatarLoaded(character.id)"
           :src="character.image"
           :alt="`${character.name} image`"
           class="figure__asset avatar"
@@ -19,14 +19,14 @@
       </figure>
       <div class="details__info">
         <template v-for="(val, key) in character" :key="`${character.id}-info-${key}`">
-          <div v-if="getInfo(key)" class="row">
-            <div class="col col-heading">{{ getInfo(key).key }}</div>
-            <div :class="`col--${key}`" class="col col-value">{{ getInfo(key).val }}</div>
+          <div v-if="getInfo(key, character)" class="row">
+            <div class="col col-heading">{{ getInfo(key, character).key }}</div>
+            <div :class="`col--${key}`" class="col col-value">{{ getInfo(key, character).val }}</div>
           </div>
         </template>
       </div>
       <div class="details__episodes">
-        <button @click="toggleEpisodes()" class="button episodes__action">
+        <button @click="toggleEpisodes(character)" class="button episodes__action">
           {{ expanded ? 'Hide' : 'Show' }} {{ character.episode.length }} episodes {{ expanded ? '-' : '+' }}
         </button>
         <transition name="fade">
@@ -34,13 +34,15 @@
         </transition>
       </div>
     </div>
+    <div v-else-if="!loading && error !== ''" class="details details--error" v-html="error"></div>
     <Loader v-else class="details__loader" />
   </Modal>
 </template>
 
 <script>
-import { reactive, toRefs, onMounted } from 'vue'
+import { reactive, toRefs, onMounted, computed } from 'vue'
 import axios from 'axios'
+import { useStore } from 'vuex'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
 import Episodes from '@/components/Episodes.vue'
@@ -55,50 +57,34 @@ export default {
     Modal
   },
   setup() {
-    const api = process.env.VUE_APP_API_ROOT
+    const store = useStore()
     const data = reactive({
       id: 0,
-      character: {},
       expanded: false,
       episodes: [],
-      loading: true,
       loadingEpisodes: true,
       avatarLoading: {}
     })
+    const character = computed(() => store.getters['character/getCharacter'])
+    const loading = computed(() => store.getters['character/getLoadingStatus'])
+    const error = computed(() => store.getters['character/getErrorMessage'])
+    const avatarLoading = computed(() => store.getters['character/getAvatarLoading'])
 
     onMounted(() => {
-      eventBus.$on('loadCharacter', (character) => {
-        if (data.character.id !== character.id) {
-          data.character = {}
-          data.expanded = false
+      eventBus.$on('loadCharacter', (characterData) => {
+        if (store.state.character.character.id !== characterData.id) {
           data.episodes = []
-          data.loading = true
-          data.avatarLoading = {
-            [character.id]: true
-          }
-
-          loadCharacter(character)
+          data.expanded = false
         }
+
+        loadCharacter(characterData)
 
         eventBus.$emit('onModalOpen', true)
       })
     })
 
     const loadCharacter = async (target) => {
-      try {
-        const response = await axios.get(`${api}${target.id}`)
-
-        if (response.data) {
-          data.character = response.data
-          data.loading = false
-        }
-      } catch (error) {
-        if (error.response.data.error) {
-          data.error = `<span class="pickle">${target.name}</span> must be a myth... We can't find anything!`
-        }
-
-        console.error('Error happened while fetching via API', error)
-      }
+      await store.dispatch('character/loadCharacter', target)
     }
 
     const loadEpisolde = async (url) => {
@@ -119,15 +105,15 @@ export default {
       }
     }
 
-    const toggleEpisodes = async () => {
+    const toggleEpisodes = async (character) => {
       if (data.expanded) {
         data.expanded = false
       } else {
         data.expanded = true
 
         if (!data.episodes.length) {
-          for (let i = 0; i < data.character.episode.length; i++) {
-            const url = data.character.episode[i]
+          for (let i = 0; i < character.episode.length; i++) {
+            const url = character.episode[i]
 
             const episode = await loadEpisolde(url)
 
@@ -143,38 +129,35 @@ export default {
       }
     }
 
-    const getInfo = (attr) => {
+    const getInfo = (attr, values) => {
       switch (attr) {
         case 'name':
           return {
             key: 'Name',
-            val: data.character.name
+            val: values.name
           }
         case 'gender':
           return {
             key: 'Gender',
-            val: data.character.gender
+            val: values.gender
           }
         case 'location':
           return {
             key: 'Location',
-            val: data.character.location.name
+            val: values.location.name
           }
         case 'origin':
           return {
             key: 'Origin',
-            val: data.character.origin.name
+            val: values.origin.name
           }
         default:
           return false
       }
     }
 
-    const onAvatarLoaded = () => {
-      data.avatarLoading = {
-        ...data.avatarLoading,
-        [data.character.id]: false
-      }
+    const onAvatarLoaded = (id) => {
+      store.commit('character/setAvatarLoading', { [id]: false })
     }
 
     return {
@@ -182,7 +165,11 @@ export default {
       ...utils(),
       getInfo,
       toggleEpisodes,
-      onAvatarLoaded
+      onAvatarLoaded,
+      avatarLoading,
+      character,
+      error,
+      loading
     }
   }
 }
