@@ -64,13 +64,13 @@ export default {
   setup() {
     const store = useStore()
     const data = reactive({
-      id: 0,
-      expanded: false
+      id: 0
     })
     const character = computed(() => store.getters['character/getCharacter'])
     const loading = computed(() => store.getters['character/getLoadingStatus'])
     const error = computed(() => store.getters['character/getErrorMessage'])
     const avatarLoading = computed(() => store.getters['character/getAvatarLoading'])
+    const expanded = computed(() => store.getters['character/getEpisodeExpanded'])
     const episodes = computed(() => store.getters['episodes/getEpisodes'])
     const loadingEpisodes = computed(() => store.getters['episodes/getLoadingStatus'])
     const episodesError = computed(() => store.getters['episodes/getErrorMessage'])
@@ -79,11 +79,8 @@ export default {
       eventBus.$on('loadCharacter', (characterData) => {
         if (store.getters['character/getCharacter'].id !== characterData.id) {
           store.dispatch('episodes/resetStore')
-          data.expanded = false
           loadCharacter(characterData)
         }
-
-        // store.dispatch('modal/openModal', () => (document.body.style.overflow = 'hidden'))
       })
     })
 
@@ -93,9 +90,9 @@ export default {
 
     const toggleEpisodes = async (character) => {
       if (data.expanded) {
-        data.expanded = false
+        store.commit('character/setEpisodeExpanded', false)
       } else {
-        data.expanded = true
+        store.commit('character/setEpisodeExpanded', true)
 
         if (!store.getters['episodes/getEpisodes'].length) {
           await store.dispatch('episodes/loadEpisodes', character.episode)
@@ -144,6 +141,7 @@ export default {
       character,
       error,
       loading,
+      expanded,
       episodes,
       loadingEpisodes,
       episodesError

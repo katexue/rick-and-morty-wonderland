@@ -15,8 +15,9 @@
 </template>
 
 <script>
-import { reactive, toRefs } from 'vue'
+import { reactive, toRefs, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
 import OpenInModal from '@/assets/open-in-modal.svg'
@@ -45,12 +46,27 @@ export default {
       }
     })
     const store = useStore()
+    const router = useRouter()
+    const route = useRoute()
+
+    onMounted(() => {
+      if (route.meta.showModal && route.params.id === props.character.id.toString()) {
+        store.dispatch('modal/openModal', () => (document.body.style.overflow = 'hidden'))
+        eventBus.$emit('loadCharacter', {
+          id: props.character.id,
+          name: props.character.name
+        })
+      }
+    })
 
     const toggleCharacter = () => {
-      store.dispatch('modal/openModal', () => (document.body.style.overflow = 'hidden'))
-      eventBus.$emit('loadCharacter', {
-        id: props.character.id,
-        name: props.character.name
+      router.push({
+        name: 'CharacterDetails',
+        params: {
+          page: route.params.page,
+          id: props.character.id
+        },
+        query: route.query
       })
     }
 

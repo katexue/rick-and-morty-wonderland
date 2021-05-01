@@ -20,6 +20,7 @@
 // import { onMounted, reactive, toRefs } from 'vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
 // import eventBus from '@/plugins/eventBus'
 import Close from '@/assets/close.svg'
 
@@ -30,11 +31,22 @@ export default {
   },
   setup() {
     const store = useStore()
+    const router = useRouter()
+    const route = useRoute()
 
     const modalOpen = computed(() => store.getters['modal/getModalStatus'])
 
     const closeModal = () => {
-      store.dispatch('modal/closeModal', () => (document.body.style.overflow = ''))
+      store.dispatch('modal/closeModal', () => {
+        document.body.style.overflow = ''
+        router.push({
+          name: 'Characters',
+          params: {
+            page: route.params.page
+          },
+          query: route.query
+        })
+      })
     }
 
     return {
