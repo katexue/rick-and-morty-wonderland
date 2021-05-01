@@ -1,7 +1,7 @@
 # Rick and Morty Wonderland
 
 ## Netlify Link
-Netlify link is available [here](#toreplace).
+Netlify link is available [here](https://updates--rick-and-morty-wonderland.netlify.app/).
 
 ### Why not Heroku
 I think heroku is not really for a static site, there is no server required in this test. Hence deployed to Netlify.
