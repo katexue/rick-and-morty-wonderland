@@ -17,8 +17,10 @@
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from 'vue'
-import eventBus from '@/plugins/eventBus'
+// import { onMounted, reactive, toRefs } from 'vue'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+// import eventBus from '@/plugins/eventBus'
 import Close from '@/assets/close.svg'
 
 export default {
@@ -27,25 +29,16 @@ export default {
     Close
   },
   setup() {
-    const data = reactive({
-      modalOpen: false
-    })
+    const store = useStore()
+
+    const modalOpen = computed(() => store.getters['modal/getModalStatus'])
 
     const closeModal = () => {
-      data.modalOpen = false
-      document.body.style.overflow = ''
-      eventBus.$emit('onModalClose')
+      store.dispatch('modal/closeModal', () => (document.body.style.overflow = ''))
     }
 
-    onMounted(() => {
-      eventBus.$on('onModalOpen', (open) => {
-        data.modalOpen = open
-        document.body.style.overflow = 'hidden'
-      })
-    })
-
     return {
-      ...toRefs(data),
+      modalOpen,
       closeModal
     }
   }

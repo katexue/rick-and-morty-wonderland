@@ -31,7 +31,18 @@ const routes = [
     path: '/characters/:page(\\d+)',
     name: 'Characters',
     component: Characters,
-    props: true
+    props: true,
+    children: [
+      {
+        path: ':id',
+        name: 'Character-Details',
+        component: Characters,
+        props: true,
+        meta: {
+          showModel: true
+        }
+      }
+    ]
   },
   {
     path: '/error',

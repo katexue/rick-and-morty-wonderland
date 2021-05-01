@@ -16,6 +16,7 @@
 
 <script>
 import { reactive, toRefs } from 'vue'
+import { useStore } from 'vuex'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
 import OpenInModal from '@/assets/open-in-modal.svg'
@@ -43,9 +44,10 @@ export default {
         [props.character.id]: true
       }
     })
+    const store = useStore()
 
     const toggleCharacter = () => {
-      eventBus.$emit('onModalOpen', true)
+      store.dispatch('modal/openModal', () => (document.body.style.overflow = 'hidden'))
       eventBus.$emit('loadCharacter', {
         id: props.character.id,
         name: props.character.name
@@ -144,6 +146,7 @@ export default {
 
 .avatar-wrap {
   width: var(--avatar-size-s);
+  cursor: pointer;
 
   @include medium-up {
     width: var(--avatar-size);
