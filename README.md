@@ -34,10 +34,16 @@ yarn test:unit
 
 `[Vue warn]: Failed to resolve component: PrevIcon`
 
-Need to configure vue-svg-loader with jest:
+It seems that need to configure vue-svg-loader with jest, but couldn't get it work with good amount of time spent on it:
 https://github.com/visualfanatic/vue-svg-loader/issues/38
 
-Current issue is `require('vue-jest/lib/template-compiler')` doesn't exist...
+Issue occuring in solution provided above is: `require('vue-jest/lib/template-compiler')` doesn't exist...
+
+**To replicate the bug**
+
+1. Uncomment `line 89` (and comment out `line 90`) in file `src/components/Pagination.vue` file.
+2. Run `yarn test:unit`.
+3. 8th test should fail.
 
 ### _Lints and fixes files_
 ```

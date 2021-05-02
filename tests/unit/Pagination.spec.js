@@ -20,8 +20,21 @@ describe('Pagination', () => {
     expect(leftSeparator.exists()).toBe(false)
   })
 
-  it('If total <= 5 pages (default) last page button and right ... should NOT be showing', () => {
-    const wrapper = shallowMount(Pagination)
+  it('If total < 5 pages (default) last page button and right ... should NOT be showing', () => {
+    const getRandomInt = (min, max) => {
+      min = Math.ceil(min)
+      max = Math.floor(max)
+
+      //The maximum is exclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min) + min)
+    }
+
+    const wrapper = shallowMount(Pagination, {
+      props: {
+        pages: getRandomInt(1, 5)
+      }
+    })
+
     const rightSeparator = wrapper.find('[data-testid="separator-right"]')
     const lastPage = wrapper.find('[data-testid="page-last"]')
 
@@ -111,5 +124,18 @@ describe('Pagination', () => {
         expect(pagination.classes('page-current')).toBe(true)
       }
     }
+  })
+
+  it('BUG FIX: If total 5 pages, last page button and right ... should NOT be showing', () => {
+    const wrapper = shallowMount(Pagination, {
+      props: {
+        pages: 5
+      }
+    })
+    const rightSeparator = wrapper.find('[data-testid="separator-right"]')
+    const lastPage = wrapper.find('[data-testid="page-last"]')
+
+    expect(rightSeparator.exists()).toBe(false)
+    expect(lastPage.exists()).toBe(false)
   })
 })
