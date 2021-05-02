@@ -3,19 +3,27 @@
     <button :disabled="prevPage <= 0" @click="changePage(prevPage)" class="page-prev">
       <PrevIcon class="page__icon icon-prev" />
     </button>
-    <button v-if="prevSeparator && prevPage > 2" @click="changePage(1)" class="page">1</button>
-    <div v-if="prevSeparator" class="separator">...</div>
+    <button v-if="prevSeparator && prevPage > 2" @click="changePage(1)" class="page" data-testid="page-first">1</button>
+    <div v-if="prevSeparator" class="separator" data-testid="separator-left">...</div>
     <button
-      v-for="page in activePages"
+      v-for="(page, index) in activePages"
       :key="`page${page}`"
       :class="{ 'page-current': currentPage === page }"
+      :data-testid="`active-page-${index}`"
       @click="changePage(page)"
       class="page"
     >
       {{ page }}
     </button>
-    <div v-if="nextSeparator" class="separator">...</div>
-    <button v-if="nextSeparator && pages - nextPage > 1" @click="changePage(pages)" class="page">{{ pages }}</button>
+    <div v-if="nextSeparator" class="separator" data-testid="separator-right">...</div>
+    <button
+      v-if="nextSeparator && pages - nextPage > 1"
+      @click="changePage(pages)"
+      class="page"
+      data-testid="page-last"
+    >
+      {{ pages }}
+    </button>
     <button :disabled="nextPage >= pages" @click="changePage(nextPage)" class="page page-prev">
       <NextIcon class="page__icon icon-next" />
     </button>
