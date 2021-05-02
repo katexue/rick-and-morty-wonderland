@@ -86,6 +86,7 @@ export default {
         return props.currentPage - 1
       }),
       longPagination: computed(() => {
+        // return true
         return props.pages > data.pageControlSize
       }),
       prevSeparator: computed(() => {
