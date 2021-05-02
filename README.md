@@ -25,6 +25,20 @@ yarn serve
 yarn build
 ```
 
+### Unit testing
+```
+yarn test:unit
+```
+
+**Current warning in testing**
+
+`[Vue warn]: Failed to resolve component: PrevIcon`
+
+Need to configure vue-svg-loader with jest:
+https://github.com/visualfanatic/vue-svg-loader/issues/38
+
+Current issue is `require('vue-jest/lib/template-compiler')` doesn't exist...
+
 ### _Lints and fixes files_
 ```
 yarn lint
