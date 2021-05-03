@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <router-view class="wrapper"></router-view>
+  <router-view :key="$route.fullPath" class="wrapper"></router-view>
   <Footer />
 </template>
 

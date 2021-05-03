@@ -1,11 +1,12 @@
 <template>
-  <ol v-if="!loading" class="episodes">
+  <ol v-if="!loading && error === ''" class="episodes">
     <li v-for="(ep, index) in episodes" :key="`episode-${ep.episode}-${ep.id}`" class="episode">
       <div class="episode__id">{{ index + 1 }}. {{ ep.episode }}</div>
       <div class="episode__date">{{ ep.air_date }}</div>
       <div class="episode__name">{{ ep.name }}</div>
     </li>
   </ol>
+  <p v-else-if="!loading && error !== ''" class="episodes--error">{{ error }}</p>
   <p v-else class="h2">Loading...</p>
 </template>
 
@@ -24,6 +25,10 @@ export default {
     episodes: {
       type: Array,
       default: () => []
+    },
+    error: {
+      type: String,
+      default: ''
     }
   }
 }

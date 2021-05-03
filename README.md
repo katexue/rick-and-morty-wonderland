@@ -1,7 +1,7 @@
 # Rick and Morty Wonderland
 
 ## Netlify Link
-Netlify link is available [here](#toreplace).
+Netlify link is available [here](https://updates--rick-and-morty-wonderland.netlify.app/).
 
 ### Why not Heroku
 I think heroku is not really for a static site, there is no server required in this test. Hence deployed to Netlify.
@@ -24,6 +24,26 @@ yarn serve
 ```
 yarn build
 ```
+
+### Unit testing
+```
+yarn test:unit
+```
+
+**Current warning in testing**
+
+`[Vue warn]: Failed to resolve component: PrevIcon`
+
+It seems that need to configure vue-svg-loader with jest, but couldn't get it work with good amount of time spent on it:
+https://github.com/visualfanatic/vue-svg-loader/issues/38
+
+Issue occuring in solution provided above is: `require('vue-jest/lib/template-compiler')` doesn't exist...
+
+**To replicate the bug**
+
+1. Uncomment `line 89` (and comment out `line 90`) in file `src/components/Pagination.vue` file.
+2. Run `yarn test:unit`.
+3. 8th test should fail.
 
 ### _Lints and fixes files_
 ```

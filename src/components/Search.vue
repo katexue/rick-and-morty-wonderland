@@ -32,7 +32,6 @@ import { useRoute } from 'vue-router'
 
 export default {
   setup(props, { emit }) {
-    // const router = useRouter()
     const route = useRoute()
     const data = reactive({
       search: '',

@@ -31,7 +31,23 @@ const routes = [
     path: '/characters/:page(\\d+)',
     name: 'Characters',
     component: Characters,
-    props: true
+    props: true,
+    meta: {
+      showModal: false,
+      reloadPage: true
+    },
+    children: [
+      {
+        path: ':id',
+        name: 'CharacterDetails',
+        component: Characters,
+        props: true,
+        meta: {
+          showModal: true,
+          reloadPage: false
+        }
+      }
+    ]
   },
   {
     path: '/error',
@@ -54,7 +70,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.params.catchAll && to.name === 'CharactersDefault') {
+  if (from.name === 'CharacterDetails' && to.name === 'Characters' && from.params.page === to.params.page) {
+    to.meta.reloadPage = false
+    next()
+  } else if (to.params.catchAll && to.name === 'CharactersDefault') {
     next('/characters/1')
   } else if (to.params.catchAll && to.name === 'Characters') {
     next({

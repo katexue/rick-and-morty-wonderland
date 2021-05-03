@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { reactive, toRefs, computed, onMounted } from 'vue'
+import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { useStore } from 'vuex'
 import Character from '@/components/Character.vue'
 import Search from '@/components/Search.vue'
 import Pagination from '@/components/Pagination.vue'
@@ -56,16 +56,12 @@ export default {
 const charactersSetup = () => {
   const router = useRouter()
   const route = useRoute()
-  const api = process.env.VUE_APP_API_ROOT
+  const store = useStore()
   const pageTitle = 'Rick and Morty Wonderland'
   const data = reactive({
-    loading: true,
     qty: 20,
     currentPage: parseInt(route.params.page, 10),
     search: route.query.name || '',
-    information: {},
-    characters: [],
-    error: '',
     nextPage: computed(() => {
       return data.currentPage + 1
     })
@@ -74,7 +70,9 @@ const charactersSetup = () => {
   document.title = process.env.VUE_APP_TITLE_PREFIX ? `${process.env.VUE_APP_TITLE_PREFIX} ${pageTitle}` : pageTitle
 
   onMounted(async () => {
-    await loadPage(data.currentPage)
+    if (route.meta.reloadPage || !store.getters['characters/getCharacters'].length) {
+      loadPage(data.currentPage)
+    }
   })
 
   onBeforeRouteUpdate(async (to, from) => {
@@ -105,32 +103,11 @@ const charactersSetup = () => {
   }
 
   const loadPage = async (page) => {
-    data.loading = true
-
-    try {
-      const response = await axios.get(
-        `${api}?page=${page}&count=${data.qty}${data.search ? `&name=${data.search}` : ''}`
-      )
-
-      if (response.data) {
-        const { info, results } = response.data
-
-        data.error = ''
-        data.information = { ...info }
-        data.characters = results
-      }
-    } catch (error) {
-      if (error.response.data.error) {
-        data.error = `This is quite the pickle, Morty...<br><span class="pickle">${data.search}</span> doesn't exist in this universe!`
-
-        data.information = {}
-        data.characters = []
-      }
-
-      console.error('Error happened while fetching via API', error)
-    } finally {
-      data.loading = false
-    }
+    await store.dispatch('characters/loadPage', {
+      qty: data.qty,
+      page: page,
+      search: data.search
+    })
   }
 
   const loadNextPage = async (nextPage) => {
@@ -159,16 +136,15 @@ const charactersSetup = () => {
     return index + 1 + data.qty * (data.currentPage - 1)
   }
 
-  // const toggleModal = (data) => {
-  //   console.log(data)
-  // }
-
   return {
     ...toRefs(data),
     loadNextPage,
-    // toggleModal,
     getCharacterIndex,
-    searchCharacters
+    searchCharacters,
+    loading: computed(() => store.getters['characters/getLoadingStatus']),
+    information: computed(() => store.getters['characters/getInformation']),
+    characters: computed(() => store.getters['characters/getCharacters']),
+    error: computed(() => store.getters['characters/getErrorMessage'])
   }
 }
 </script>

@@ -3,19 +3,27 @@
     <button :disabled="prevPage <= 0" @click="changePage(prevPage)" class="page-prev">
       <PrevIcon class="page__icon icon-prev" />
     </button>
-    <button v-if="prevPage > 2" @click="changePage(1)" class="page">1</button>
-    <div v-if="prevSeparator" class="separator">...</div>
+    <button v-if="prevSeparator && prevPage > 2" @click="changePage(1)" class="page" data-testid="page-first">1</button>
+    <div v-if="prevSeparator" class="separator" data-testid="separator-left">...</div>
     <button
-      v-for="page in activePages"
+      v-for="(page, index) in activePages"
       :key="`page${page}`"
       :class="{ 'page-current': currentPage === page }"
+      :data-testid="`active-page-${index}`"
       @click="changePage(page)"
       class="page"
     >
       {{ page }}
     </button>
-    <div v-if="nextSeparator" class="separator">...</div>
-    <button v-if="pages - nextPage > 1" @click="changePage(pages)" class="page">{{ pages }}</button>
+    <div v-if="nextSeparator" class="separator" data-testid="separator-right">...</div>
+    <button
+      v-if="nextSeparator && pages - nextPage > 1"
+      @click="changePage(pages)"
+      class="page"
+      data-testid="page-last"
+    >
+      {{ pages }}
+    </button>
     <button :disabled="nextPage >= pages" @click="changePage(nextPage)" class="page page-prev">
       <NextIcon class="page__icon icon-next" />
     </button>
@@ -49,38 +57,53 @@ export default {
   },
   setup(props, { emit }) {
     const data = reactive({
-      prevKey: 3,
-      nextKey: 2,
+      prevKeyPage: 3,
+      nextKeyPage: 2,
+      pageControlSize: 5,
       activePages: computed(() => {
-        let range = []
+        let pageControl = []
 
-        if (props.pages < 5) {
-          range = props.pages
+        if (props.pages < data.pageControlSize) {
+          pageControl = props.pages
         } else {
-          for (let i = 0; i < 5; i++) {
-            const gap1 = 5 % props.currentPage
+          for (let i = 0; i < data.pageControlSize; i++) {
+            const gap1 = data.pageControlSize % props.currentPage
             const gap2 = props.pages - props.currentPage
 
-            if (props.currentPage < data.prevKey) {
-              range.push(props.currentPage + (i - gap1))
-            } else if (gap2 < data.nextKey) {
-              range.push(props.currentPage + (i - 4 + gap2))
+            if (props.currentPage < data.prevKeyPage) {
+              pageControl.push(props.currentPage + (i - gap1))
+            } else if (gap2 < data.nextKeyPage) {
+              pageControl.push(props.currentPage + (i - (data.pageControlSize - 1) + gap2))
             } else {
-              range.push(props.currentPage + (i - 2))
+              pageControl.push(props.currentPage + (i - 2))
             }
           }
         }
 
-        return range
+        return pageControl
       }),
       prevPage: computed(() => {
         return props.currentPage - 1
       }),
+      longPagination: computed(() => {
+        // return true
+        return props.pages > data.pageControlSize
+      }),
       prevSeparator: computed(() => {
-        return props.currentPage - data.prevKey > 0
+        /*
+         * Make sure it only appears when total pagenation
+         * size is greater than pageControlSize (5)
+         * and first item of pageControl is bigger than the first page
+         */
+        return props.currentPage - data.prevKeyPage > 0 && data.longPagination
       }),
       nextSeparator: computed(() => {
-        return props.currentPage + data.nextKey < props.pages
+        /*
+         * Make sure it only appears when total pagenation
+         * size is greater than pageControlSize (5)
+         * and last item of pageControl is smaller than the last page number
+         */
+        return props.currentPage + data.nextKeyPage < props.pages && data.longPagination
       })
     })
 

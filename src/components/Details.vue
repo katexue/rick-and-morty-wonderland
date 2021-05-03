@@ -1,13 +1,13 @@
 <template>
   <Modal>
     <div
-      v-if="!loading && character.status"
+      v-if="!loading && error === ''"
       :class="[`character--${character.status.toLowerCase()}`, `character--${character.id}`]"
       class="details"
     >
       <figure :class="{ 'avatar-loading': avatarLoading[character.id] }" class="figure">
         <img
-          @load="onAvatarLoaded"
+          @load="onAvatarLoaded(character.id)"
           :src="character.image"
           :alt="`${character.name} image`"
           class="figure__asset avatar"
@@ -19,28 +19,35 @@
       </figure>
       <div class="details__info">
         <template v-for="(val, key) in character" :key="`${character.id}-info-${key}`">
-          <div v-if="getInfo(key)" class="row">
-            <div class="col col-heading">{{ getInfo(key).key }}</div>
-            <div :class="`col--${key}`" class="col col-value">{{ getInfo(key).val }}</div>
+          <div v-if="getInfo(key, character)" class="row">
+            <div class="col col-heading">{{ getInfo(key, character).key }}</div>
+            <div :class="`col--${key}`" class="col col-value">{{ getInfo(key, character).val }}</div>
           </div>
         </template>
       </div>
       <div class="details__episodes">
-        <button @click="toggleEpisodes()" class="button episodes__action">
+        <button @click="toggleEpisodes(character)" class="button episodes__action">
           {{ expanded ? 'Hide' : 'Show' }} {{ character.episode.length }} episodes {{ expanded ? '-' : '+' }}
         </button>
         <transition name="fade">
-          <Episodes v-show="expanded" :loading="loadingEpisodes" :expanded="expanded" :episodes="episodes" />
+          <Episodes
+            v-show="expanded"
+            :loading="loadingEpisodes"
+            :expanded="expanded"
+            :episodes="episodes"
+            :error="episodesError"
+          />
         </transition>
       </div>
     </div>
+    <div v-else-if="!loading && error !== ''" class="details details--error" v-html="error"></div>
     <Loader v-else class="details__loader" />
   </Modal>
 </template>
 
 <script>
-import { reactive, toRefs, onMounted } from 'vue'
-import axios from 'axios'
+import { reactive, toRefs, onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
 import eventBus from '@/plugins/eventBus'
 import utils from '@/mixin'
 import Episodes from '@/components/Episodes.vue'
@@ -55,126 +62,73 @@ export default {
     Modal
   },
   setup() {
-    const api = process.env.VUE_APP_API_ROOT
+    const store = useStore()
     const data = reactive({
-      id: 0,
-      character: {},
-      expanded: false,
-      episodes: [],
-      loading: true,
-      loadingEpisodes: true,
-      avatarLoading: {}
+      id: 0
     })
+    const character = computed(() => store.getters['character/getCharacter'])
+    const loading = computed(() => store.getters['character/getLoadingStatus'])
+    const error = computed(() => store.getters['character/getErrorMessage'])
+    const avatarLoading = computed(() => store.getters['character/getAvatarLoading'])
+    const expanded = computed(() => store.getters['character/getEpisodeExpanded'])
+    const episodes = computed(() => store.getters['episodes/getEpisodes'])
+    const loadingEpisodes = computed(() => store.getters['episodes/getLoadingStatus'])
+    const episodesError = computed(() => store.getters['episodes/getErrorMessage'])
 
     onMounted(() => {
-      eventBus.$on('loadCharacter', (character) => {
-        if (data.character.id !== character.id) {
-          data.character = {}
-          data.expanded = false
-          data.episodes = []
-          data.loading = true
-          data.avatarLoading = {
-            [character.id]: true
-          }
-
-          loadCharacter(character)
+      eventBus.$on('loadCharacter', (characterData) => {
+        if (store.getters['character/getCharacter'].id !== characterData.id) {
+          store.dispatch('episodes/resetStore')
+          loadCharacter(characterData)
         }
-
-        eventBus.$emit('onModalOpen', true)
       })
     })
 
     const loadCharacter = async (target) => {
-      try {
-        const response = await axios.get(`${api}${target.id}`)
-
-        if (response.data) {
-          data.character = response.data
-          data.loading = false
-        }
-      } catch (error) {
-        if (error.response.data.error) {
-          data.error = `<span class="pickle">${target.name}</span> must be a myth... We can't find anything!`
-        }
-
-        console.error('Error happened while fetching via API', error)
-      }
+      await store.dispatch('character/loadCharacter', target)
     }
 
-    const loadEpisolde = async (url) => {
-      try {
-        const response = await axios.get(url)
-
-        if (response.data) {
-          return response.data
-        }
-      } catch (error) {
-        if (error.response.data.error) {
-          return {
-            error: error.response.data.error
-          }
-        }
-
-        console.error('Error happened while fetching via API', error)
-      }
-    }
-
-    const toggleEpisodes = async () => {
+    const toggleEpisodes = async (character) => {
       if (data.expanded) {
-        data.expanded = false
+        store.commit('character/setEpisodeExpanded', false)
       } else {
-        data.expanded = true
+        store.commit('character/setEpisodeExpanded', true)
 
-        if (!data.episodes.length) {
-          for (let i = 0; i < data.character.episode.length; i++) {
-            const url = data.character.episode[i]
-
-            const episode = await loadEpisolde(url)
-
-            if (episode.error) {
-              console.log(episode.error)
-            } else {
-              data.episodes.push(episode)
-            }
-          }
-
-          data.loadingEpisodes = false
+        if (!store.getters['episodes/getEpisodes'].length) {
+          await store.dispatch('episodes/loadEpisodes', character.episode)
         }
       }
     }
 
-    const getInfo = (attr) => {
+    const getInfo = (attr, values) => {
       switch (attr) {
         case 'name':
           return {
             key: 'Name',
-            val: data.character.name
+            val: values.name
           }
         case 'gender':
           return {
             key: 'Gender',
-            val: data.character.gender
+            val: values.gender
           }
         case 'location':
           return {
             key: 'Location',
-            val: data.character.location.name
+            val: values.location.name
           }
         case 'origin':
           return {
             key: 'Origin',
-            val: data.character.origin.name
+            val: values.origin.name
           }
         default:
           return false
       }
     }
 
-    const onAvatarLoaded = () => {
-      data.avatarLoading = {
-        ...data.avatarLoading,
-        [data.character.id]: false
-      }
+    const onAvatarLoaded = (id) => {
+      store.commit('character/setAvatarLoading', { [id]: false })
     }
 
     return {
@@ -182,7 +136,15 @@ export default {
       ...utils(),
       getInfo,
       toggleEpisodes,
-      onAvatarLoaded
+      onAvatarLoaded,
+      avatarLoading,
+      character,
+      error,
+      loading,
+      expanded,
+      episodes,
+      loadingEpisodes,
+      episodesError
     }
   }
 }
