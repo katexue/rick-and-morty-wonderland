@@ -57,7 +57,7 @@ const charactersSetup = () => {
   const router = useRouter()
   const route = useRoute()
   const api = process.env.VUE_APP_API_ROOT
-  const pageTitle = 'Rick and Morty Wonderland'
+  // const pageTitle = 'Rick and Morty Wonderland'
   const data = reactive({
     loading: true,
     qty: 20,
@@ -71,7 +71,7 @@ const charactersSetup = () => {
     })
   })
 
-  document.title = process.env.VUE_APP_TITLE_PREFIX ? `${process.env.VUE_APP_TITLE_PREFIX} ${pageTitle}` : pageTitle
+  // document.title = process.env.VUE_APP_TITLE_PREFIX ? `${process.env.VUE_APP_TITLE_PREFIX} ${pageTitle}` : pageTitle
 
   onMounted(async () => {
     await loadPage(data.currentPage)

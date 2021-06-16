@@ -15,6 +15,9 @@ const routes = [
       return {
         path: '/characters/1'
       }
+    },
+    meta: {
+      title: 'Characters page'
     }
   },
   {
@@ -25,25 +28,37 @@ const routes = [
       return {
         path: '/characters/1'
       }
+    },
+    meta: {
+      title: 'Characters page'
     }
   },
   {
     path: '/characters/:page(\\d+)',
     name: 'Characters',
     component: Characters,
-    props: true
+    props: true,
+    meta: {
+      title: 'Characters page'
+    }
   },
   {
     path: '/error',
     name: 'Error',
     component: NotFound,
-    props: true
+    props: true,
+    meta: {
+      title: 'Error page'
+    }
   },
   {
     path: '/:catchAll(.*)',
     name: 'Not-Found',
     component: NotFound,
-    props: true
+    props: true,
+    meta: {
+      title: '404 page'
+    }
   }
 ]
 
@@ -54,6 +69,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  document.title = process.env.VUE_APP_TITLE_PREFIX ? `${process.env.VUE_APP_TITLE_PREFIX} ${to.meta.title}` : to.meta.title
+
   if (to.params.catchAll && to.name === 'CharactersDefault') {
     next('/characters/1')
   } else if (to.params.catchAll && to.name === 'Characters') {
