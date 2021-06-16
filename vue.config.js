@@ -1,3 +1,6 @@
+var PrerenderSpaPlugin = require('prerender-spa-plugin')
+var path = require('path')
+
 module.exports = {
   css: {
     loaderOptions: {
@@ -25,5 +28,20 @@ module.exports = {
           plugins: [{ removeTitle: false }]
         }
       })
+  },
+
+  configureWebpack: (config) => {
+    if (process.env.NODE_ENV !== 'production') return
+ 
+    return {
+      plugins: [
+        new PrerenderSpaPlugin({
+          // Absolute path to compiled SPA
+          staticDir: path.resolve(__dirname, './dist'),
+          // List of routes to prerender
+          routes:[ '/', '/characters/1' ]
+        })
+      ]
+    }
   }
 }
