@@ -25,20 +25,5 @@ module.exports = {
           plugins: [{ removeTitle: false }]
         }
       })
-  },
-
-  pluginOptions: {
-    prerenderSpa: {
-      registry: undefined,
-      renderRoutes: [
-        '/',
-        '/characters',
-        '/characters/1',
-        '/error'
-      ],
-      useRenderEvent: true,
-      headless: false,
-      onlyProduction: true
-    }
   }
 }

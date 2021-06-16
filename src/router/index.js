@@ -69,7 +69,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = process.env.VUE_APP_TITLE_PREFIX ? `${process.env.VUE_APP_TITLE_PREFIX} ${to.meta.title}` : to.meta.title
+  document.title = process.env.VUE_APP_TITLE_PREFIX
+    ? `${process.env.VUE_APP_TITLE_PREFIX} ${to.meta.title}`
+    : to.meta.title
 
   if (to.params.catchAll && to.name === 'CharactersDefault') {
     next('/characters/1')
