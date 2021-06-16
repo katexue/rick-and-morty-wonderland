@@ -8,6 +8,7 @@ module.exports = {
       }
     }
   },
+
   chainWebpack: (config) => {
     const svgRule = config.module.rule('svg')
 
@@ -24,5 +25,20 @@ module.exports = {
           plugins: [{ removeTitle: false }]
         }
       })
+  },
+
+  pluginOptions: {
+    prerenderSpa: {
+      registry: undefined,
+      renderRoutes: [
+        '/',
+        '/characters',
+        '/characters/1',
+        '/error'
+      ],
+      useRenderEvent: true,
+      headless: false,
+      onlyProduction: true
+    }
   }
 }
